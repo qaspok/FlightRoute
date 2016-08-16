@@ -4,24 +4,179 @@
 		<title>Hello, AngularJS + Jersey + Derby + Jetty</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" href="css/main.css">
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
 		<script type="text/javascript">
 			var app = angular.module('myApp', []);
-			app.controller('myCtrl', function($scope, $http) {
-				$http({method: "GET", url: "api/greeting"})
-				.then(function(response) {$scope.greeting = response.data;});
+			app.controller('flightDataController', function($scope) {
+
+				$scope.clearFlightData = function() {
+					$scope.startname = null;
+					$scope.startcode = null;
+					$scope.endname = null;
+					$scope.endcode = null;
+					$scope.cost = null;
+				}
+
+				var flights = [
+					{"startname":"London", "startcode":"LO", "endname":"Toronto", "endcode":"TO", "cost":355.37},
+					{"startname":"Toronto", "startcode":"TO", "endname":"Montreal", "endcode":"MQ", "cost":548.54},
+					{"startname":"Toronto", "startcode":"TO", "endname":"New York", "endcode":"NN", "cost":1247.23},
+					{"startname":"New York", "startcode":"NN", "endname":"Montreal", "endcode":"MQ", "cost":1327.32}
+				];
+				$scope.flights = flights;
+				$scope.sortColumn = "startname";
+				$scope.reverseSort = false;
+
+				$scope.sortData = function(column) {
+					$scope.reverseSort = ($scope.sortColumn == column) ? !$scope.reverseSort : false
+					$scope.sortColumn = column;
+				}
+				$scope.getSortClass = function(column) {
+					if($scope.sortColumn == column) {
+						return $scope.reverseSort ? "glyphicon glyphicon-sort-by-attributes-alt" : "glyphicon glyphicon-sort-by-attributes"
+					}
+					return "";
+				}
+			});
+			app.controller('flightSearchController', function($scope) {
+
+				var flights = [
+					{"startname":"London", "startcode":"LO", "endname":"Toronto", "endcode":"TO", "cost":355.37},
+					{"startname":"Toronto", "startcode":"TO", "endname":"Montreal", "endcode":"MQ", "cost":548.54}
+				];
+				$scope.flights = flights;
+
+				$scope.getTotal = function() {
+					var total = 0;
+					for(var i = 0; i < $scope.flights.length; i++){
+						total += $scope.flights[i].cost;
+					}
+					return total;
+				}
 			});
 		</script>
 	</head>
-	<body>
-		<div ng-app="myApp" ng-controller="myCtrl" class="container">
-			<div class="jumbotron text-center">
-				<h1>{{greeting}}, Binnj!</h1>
-			</div>
-			<div class="alert alert-info" role="alert">
-				<strong>Hint:</strong> Refresh the page.
+	<body ng-app="myApp">
+		<div class="container" style="padding-top: 5px;">
+			<div class="row">
+				<div class="col-sm-12">
+					<ul class="nav nav-tabs">
+						<li class="nav-item active">
+							<a href="#flight-data" class="nav-link" role="tab" data-toggle="tab">Flight Data</a>
+						</li>
+						<li class="nav-item">
+							<a href="#search" class="nav-link" role="tab" data-toggle="tab">Search</a>
+						</li>
+					</ul>
+				</div>
+				<div class="col-sm-12 tab-content">
+					<div ng-controller="flightDataController" role="tabpanel" class="tab-pane neat-box fade in active" id="flight-data">
+						<legend>Data Entry</legend>
+						<div class="row">
+							<div class="col-sm-12" style="padding-bottom: 10px">
+								<button type="button" class="btn btn-default">Import</button> 
+								<button type="button" class="btn btn-default" ng-click="clearFlightData();">Clear</button>
+							</div>
+						</div>
+						<form role="form">
+							<div class="row">
+								<div class="form-group col-sm-8">
+									<label for="startname">Start Name:</label>
+									<input type="text" class="form-control" id="startname" ng-model="startname">
+								</div>
+								<div class="form-group col-sm-4">
+									<label for="startcode">Airport Code:</label>
+									<input type="text" class="form-control" id="startcode" ng-model="startcode">
+								</div>
+								<div class="form-group col-sm-8">
+									<label for="endname">End Name:</label>
+									<input type="text" class="form-control" id="endname" ng-model="endname">
+								</div>
+								<div class="form-group col-sm-4">
+									<label for="endcode">Airport Code:</label>
+									<input type="text" class="form-control" id="endcode" ng-model="endcode">
+								</div>
+								<div class="form-group col-sm-4">
+									<label for="cost">Cost:</label>
+									<input type="text" class="form-control" id="cost" ng-model="cost">
+								</div>
+								<div class="col-sm-4">
+									<button type="submit" class="btn btn-default" style="margin-top: 24px;">Add Flight</button>
+								</div>
+							</div>
+						</form>
+						<legend>Flights</legend>
+						<div class="table-responsive">
+							<table class="table table-striped" style="margin-bottom: 0px;">
+								<thead>
+									<th ng-click="sortData('startname')">
+										Start <div ng-class="getSortClass('startname')" style="display: inline-block;"></div>
+									</th>
+									<th ng-click="sortData('endname')">
+										End <div ng-class="getSortClass('endname')" style="display: inline-block;"></div>
+									</th>
+									<th ng-click="sortData('cost')">
+										Cost <div ng-class="getSortClass('cost')" style="display: inline-block;"></div>
+									</th>
+								</thead>
+								<tbody>
+									<tr ng-repeat="flight in flights | orderBy:sortColumn:reverseSort">
+										<td>{{flight.startname}}</td>
+										<td>{{flight.endname}}</td>
+										<td>{{flight.cost}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div ng-controller="flightSearchController" role="tabpanel" class="tab-pane neat-box fade" id="search">
+						<legend>Flight Search</legend>
+						<form role="form">
+							<div class="row">
+								<div class="form-group col-sm-5">
+									<label for="startname">Start:</label>
+									<input type="text" class="form-control" id="start" ng-model="start">
+								</div>
+								<div class="form-group col-sm-5">
+									<label for="startcode">End:</label>
+									<input type="text" class="form-control" id="end" ng-model="end">
+								</div>
+								<div class="col-sm-2">
+									<button type="submit" class="btn btn-default" style="margin-top: 24px;">Search</button>
+								</div>
+							</div>
+						</form>
+						<legend>Your Cheapest Flight Path</legend>
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<thead>
+									<th>
+										Start
+									</th>
+									<th>
+										End
+									</th>
+									<th>
+										Cost
+									</th>
+								</thead>
+								<tbody>
+									<tr ng-repeat="flight in flights">
+										<td>{{flight.startname}}</td>
+										<td>{{flight.endname}}</td>
+										<td>{{flight.cost}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div style="font-weight: bold; text-align: right;">
+							<p>Total Cost $<span style="text-decoration: underline;">{{getTotal();}}</span></p>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</body>
