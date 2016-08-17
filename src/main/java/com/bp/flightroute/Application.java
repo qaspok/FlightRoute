@@ -4,6 +4,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+import com.bp.flightroute.database.FlightDatabase;
 import com.bp.flightroute.database.GreetingsDatabase;
 import com.bp.flightroute.resource.FlightResource;
 import com.bp.flightroute.resource.GreetingResource;
@@ -23,6 +24,7 @@ public class Application {
 		
 		// Setup Derby in-memory database
 		GreetingsDatabase.init();
+		FlightDatabase.init();
 		
 		// Setup Jetty web server
 		ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);

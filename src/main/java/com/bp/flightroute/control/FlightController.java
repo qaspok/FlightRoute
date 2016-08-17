@@ -6,12 +6,15 @@ import com.bp.flightroute.database.FlightDatabase;
 import com.bp.flightroute.model.Flight;
 import com.bp.flightroute.model.Flights;
 import com.bp.flightroute.transform.CvsTransformer;
+import com.bp.flightroute.transform.RouteBuilder;
 
 public class FlightController {
 
 	public static Flights search(String start, String end) {
 		
-		return FlightDatabase.search(start, end);
+		Flights flights = FlightDatabase.getAllFlights();
+		Flights cheapestRoute = RouteBuilder.cheapest(start, end, flights);
+		return cheapestRoute;
 	}
 
 	public static Flights getAllFlights() {
