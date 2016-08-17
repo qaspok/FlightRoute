@@ -5,9 +5,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
 import com.bp.flightroute.database.FlightDatabase;
-import com.bp.flightroute.database.GreetingsDatabase;
 import com.bp.flightroute.resource.FlightResource;
-import com.bp.flightroute.resource.GreetingResource;
 
 /**
  * Standalone Executable JAR for Demos
@@ -23,7 +21,6 @@ public class Application {
 	public static void main(String[] args) throws Exception {
 		
 		// Setup Derby in-memory database
-		GreetingsDatabase.init();
 		FlightDatabase.init();
 		
 		// Setup Jetty web server
@@ -37,7 +34,7 @@ public class Application {
 		// Jersey servlet for serving up API content
 		ServletHolder jerseyServlet = servletContextHandler.addServlet(org.glassfish.jersey.servlet.ServletContainer.class, "/api/*");
 		jerseyServlet.setInitOrder(0);
-		jerseyServlet.setInitParameter("jersey.config.server.provider.classnames", GreetingResource.class.getCanonicalName() + "," + FlightResource.class.getCanonicalName());
+		jerseyServlet.setInitParameter("jersey.config.server.provider.classnames", FlightResource.class.getCanonicalName());
 
 		// Default servlet for serving up static content
 		ServletHolder httpServlet = servletContextHandler.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class, "/*");
