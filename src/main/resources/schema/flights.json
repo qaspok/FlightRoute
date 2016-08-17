@@ -1,0 +1,15 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "Flights",
+	"description": "Contains a list of flights; origin, destination and cost",
+	"type": "object",
+	"properties": {
+		"flights": {
+			"description": "An array of flights",
+			"type": "array",
+			"items": {
+				"type": { "$ref": "#/flight.json" }
+			}
+		}
+	}
+}

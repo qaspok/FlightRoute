@@ -5,6 +5,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
 import com.bp.flightroute.database.GreetingsDatabase;
+import com.bp.flightroute.resource.FlightResource;
 import com.bp.flightroute.resource.GreetingResource;
 
 /**
@@ -28,13 +29,13 @@ public class Application {
 		servletContextHandler.setContextPath("/");
 		servletContextHandler.setResourceBase(Application.class.getClassLoader().getResource("root").toExternalForm());
 
-		Server server = new Server(80);
+		Server server = new Server(8080);
 		server.setHandler(servletContextHandler);
 
 		// Jersey servlet for serving up API content
 		ServletHolder jerseyServlet = servletContextHandler.addServlet(org.glassfish.jersey.servlet.ServletContainer.class, "/api/*");
 		jerseyServlet.setInitOrder(0);
-		jerseyServlet.setInitParameter("jersey.config.server.provider.classnames", GreetingResource.class.getCanonicalName());
+		jerseyServlet.setInitParameter("jersey.config.server.provider.classnames", GreetingResource.class.getCanonicalName() + "," + FlightResource.class.getCanonicalName());
 
 		// Default servlet for serving up static content
 		ServletHolder httpServlet = servletContextHandler.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class, "/*");
