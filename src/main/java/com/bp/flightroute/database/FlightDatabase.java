@@ -7,8 +7,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.bp.flightroute.model.FlatFlight;
 import com.bp.flightroute.model.Flight;
 import com.bp.flightroute.model.Flights;
+import com.bp.flightroute.model.Location;
 
 public class FlightDatabase {
 	
@@ -37,10 +39,8 @@ public class FlightDatabase {
 				ResultSet resultSet = statement.getResultSet();
 				while(resultSet.next()) {
 					Flight flight = new Flight();
-					flight.setStartname(resultSet.getString("StartName"));
-					flight.setStartcode(resultSet.getString("StartCode"));
-					flight.setEndname(resultSet.getString("EndName"));
-					flight.setEndcode(resultSet.getString("EndCode"));
+					flight.setStart(new Location(resultSet.getString("StartName"), resultSet.getString("StartCode")));
+					flight.setEnd(new Location(resultSet.getString("EndName"), resultSet.getString("EndCode")));
 					flight.setCost(resultSet.getDouble("Cost"));
 					flights.getFlights().add(flight);
 				}
@@ -51,7 +51,7 @@ public class FlightDatabase {
 		return flights;
 	}
 
-	public static void addFlight(Flight flight) {
+	public static void addFlight(FlatFlight flight) {
 		
 		try (Connection connection = DriverManager.getConnection(URL)) {
 			try(PreparedStatement statement = connection.prepareStatement(INSERT)) {
@@ -73,10 +73,10 @@ public class FlightDatabase {
 			try(PreparedStatement statement = connection.prepareStatement(INSERT)) {
 				for(Object o : flights.getFlights()) {
 					Flight flight = (Flight) o;
-					statement.setString(1, flight.getStartname());
-					statement.setString(2, flight.getStartcode());
-					statement.setString(3, flight.getEndname());
-					statement.setString(4, flight.getEndcode());
+					statement.setString(1, flight.getStart().getName());
+					statement.setString(2, flight.getStart().getCode());
+					statement.setString(3, flight.getEnd().getName());
+					statement.setString(4, flight.getEnd().getCode());
 					statement.setBigDecimal(5, BigDecimal.valueOf(flight.getCost()));
 					statement.addBatch();
 				}

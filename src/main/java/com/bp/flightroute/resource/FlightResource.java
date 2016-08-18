@@ -17,8 +17,7 @@ import org.eclipse.jetty.util.StringUtil;
 
 import com.sun.jersey.multipart.FormDataParam;
 import com.bp.flightroute.control.FlightController;
-import com.bp.flightroute.model.Flight;
-import com.bp.flightroute.model.Flights;
+import com.bp.flightroute.model.FlatFlight;
 
 @Path("flights")
 @Produces(MediaType.APPLICATION_JSON)
@@ -28,20 +27,18 @@ public class FlightResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getFlights(@QueryParam("start")String start, @QueryParam("end")String end) {
 		
-		Flights flights = null;
 		if(StringUtil.isNotBlank(start) && StringUtil.isNotBlank(end)) {
-			flights = FlightController.search(start, end);
+			return Response.ok(FlightController.search(start, end)).build();
 		} else if(StringUtil.isBlank(start) && StringUtil.isBlank(end)) {
-			flights = FlightController.getAllFlights();
+			return Response.ok(FlightController.getAllFlights()).build();
 		} else {
 			return Response.status(HttpStatus.BAD_REQUEST_400).build();
 		}
-		return Response.ok(flights).build();
 	}
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response postFlight(Flight flight) {
+	public Response postFlight(FlatFlight flight) {
 		
 		FlightController.postFlight(flight);
 		return Response.status(HttpStatus.CREATED_201).build();

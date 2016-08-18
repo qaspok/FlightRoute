@@ -3,17 +3,19 @@ package com.bp.flightroute.control;
 import java.io.InputStream;
 
 import com.bp.flightroute.database.FlightDatabase;
-import com.bp.flightroute.model.Flight;
+import com.bp.flightroute.model.FlatFlight;
 import com.bp.flightroute.model.Flights;
-import com.bp.flightroute.transform.CvsTransformer;
-import com.bp.flightroute.transform.RouteBuilder;
+import com.bp.flightroute.model.Route;
+import com.bp.flightroute.util.CvsTransformer;
+import com.bp.flightroute.util.RouteFinder;
 
 public class FlightController {
 
-	public static Flights search(String start, String end) {
+	public static Route search(String start, String end) {
 		
 		Flights flights = FlightDatabase.getAllFlights();
-		Flights cheapestRoute = RouteBuilder.cheapest(start, end, flights);
+		RouteFinder routeFinder = new RouteFinder(flights);
+		Route cheapestRoute = routeFinder.cheapestRoute(start, end);
 		return cheapestRoute;
 	}
 
@@ -22,7 +24,7 @@ public class FlightController {
 		return FlightDatabase.getAllFlights();
 	}
 
-	public static void postFlight(Flight flight) {
+	public static void postFlight(FlatFlight flight) {
 		
 		FlightDatabase.addFlight(flight);		
 	}

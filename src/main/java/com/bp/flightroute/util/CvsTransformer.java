@@ -1,4 +1,4 @@
-package com.bp.flightroute.transform;
+package com.bp.flightroute.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.bp.flightroute.model.Flight;
 import com.bp.flightroute.model.Flights;
+import com.bp.flightroute.model.Location;
 
 public class CvsTransformer {
 
@@ -20,10 +21,8 @@ public class CvsTransformer {
 			for (int r = 1; r < rows.size(); r++) {
 				String[] column = rows.get(r).split(",");
 				Flight flight = new Flight();
-				flight.setStartname(column[0]);
-				flight.setStartcode(column[1]);
-				flight.setEndname(column[2]);
-				flight.setEndcode(column[3]);
+				flight.setStart(new Location(column[0], column[1]));
+				flight.setEnd(new Location(column[2], column[3]));
 				flight.setCost(Double.parseDouble(column[4]));
 				flights.getFlights().add(flight);
 			}
