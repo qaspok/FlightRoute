@@ -45,6 +45,7 @@ public class FlightResource {
 	}
 	
 	@POST
+	@Path("import")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response bulkUpload(@FormDataParam("cvs") InputStream cvs) {
 		
