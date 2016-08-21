@@ -1,10 +1,20 @@
+body {
+	background-image: url("../img/sky.jpg");
+}
+
 th { cursor: pointer; }
 
-legend { padding-top: 5px; }
+legend { padding-top: 10px; }
+
+.nav-link {
+	background-color: #ddd;
+}
 
 .neat-box {
+	background-color: white;
 	border-style: none solid solid solid;
 	border-width: 1px;
 	border-color: #ddd;
-	padding: 5px;
+	padding: 10px;
+	border-radius: 0px 0px 5px 5px;
 }

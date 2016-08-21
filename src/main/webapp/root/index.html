@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Hello, AngularJS + Jersey + Derby + Jetty</title>
+		<title>Flight Search</title>
+		<link rel="shortcut icon" href="img/paper-plane.ico" type="image/x-icon" />
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
 		<link rel="stylesheet" href="css/main.css">
@@ -140,11 +141,11 @@
 					</ul>
 				</div>
 				<div class="col-sm-12 tab-content">
-					<div ng-controller="flightDataController" role="tabpanel" class="tab-pane neat-box fade in active" id="flight-data">
+					<div ng-controller="flightDataController" role="tabpanel" class="tab-pane neat-box active" id="flight-data">
 						<legend>Data Entry</legend>
 						<div class="row">
 							<div class="col-sm-12" style="padding-bottom: 10px">
-								<input id="fileInput" type="file" accept=".csv" fileread="cvsFile" style="margin-bottom: 5px;" />
+								<input id="fileInput" type="file" accept=".csv" fileread="cvsFile"  style="margin-bottom: 5px;" />
 								<button type="button" class="btn btn-default" ng-click="importCsv()">Import</button> 
 								<button type="button" class="btn btn-default" ng-click="clearFlightData()">Clear</button>
 							</div>
@@ -172,35 +173,38 @@
 									<input type="text" class="form-control" id="cost" ng-model="cost">
 								</div>
 								<div class="col-sm-4">
-									<button type="submit" ng-click="addFlight()" class="btn btn-default" style="margin-top: 24px;">Add Flight</button>
+									<button type="submit" ng-click="addFlight()" class="btn btn-primary" style="margin-top: 24px;">Add Flight</button>
 								</div>
 							</div>
 						</form>
-						<legend>Flights</legend>
-						<div class="table-responsive">
-							<table class="table table-striped" style="margin-bottom: 0px;">
-								<thead>
-									<th ng-click="sortData('startname')">
-										Start <div ng-class="getSortClass('startname')" style="display: inline-block;"></div>
-									</th>
-									<th ng-click="sortData('endname')">
-										End <div ng-class="getSortClass('endname')" style="display: inline-block;"></div>
-									</th>
-									<th ng-click="sortData('cost')">
-										Cost <div ng-class="getSortClass('cost')" style="display: inline-block;"></div>
-									</th>
-								</thead>
-								<tbody>
-									<tr ng-repeat="flight in flights | orderBy:sortColumn:reverseSort">
-										<td>{{flight.start.name}}</td>
-										<td>{{flight.end.name}}</td>
-										<td>{{flight.cost}}</td>
-									</tr>
-								</tbody>
-							</table>
+						<div ng-show="flights && flights.length > 0">
+							<hr>
+							<legend>Flights</legend>
+							<div class="table-responsive">
+								<table class="table table-striped" style="margin-bottom: 0px;">
+									<thead>
+										<th ng-click="sortData('startname')">
+											Start <div ng-class="getSortClass('startname')" style="display: inline-block;"></div>
+										</th>
+										<th ng-click="sortData('endname')">
+											End <div ng-class="getSortClass('endname')" style="display: inline-block;"></div>
+										</th>
+										<th ng-click="sortData('cost')">
+											Cost <div ng-class="getSortClass('cost')" style="display: inline-block;"></div>
+										</th>
+									</thead>
+									<tbody>
+										<tr ng-repeat="flight in flights | orderBy:sortColumn:reverseSort">
+											<td>{{flight.start.name}}</td>
+											<td>{{flight.end.name}}</td>
+											<td>{{flight.cost}}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
 						</div>
 					</div>
-					<div ng-controller="flightSearchController" role="tabpanel" class="tab-pane neat-box fade" id="search">
+					<div ng-controller="flightSearchController" role="tabpanel" class="tab-pane neat-box" id="search">
 						<legend>Flight Search</legend>
 						<form role="form">
 							<div class="row">
@@ -213,35 +217,38 @@
 									<input type="text" class="form-control" id="end" ng-model="end">
 								</div>
 								<div class="col-sm-2">
-									<button type="submit" ng-click="flightSearch()" class="btn btn-default" style="margin-top: 24px;">Search</button>
+									<button type="submit" ng-click="flightSearch()" class="btn btn-primary" style="margin-top: 24px;">Search</button>
 								</div>
 							</div>
 						</form>
-						<legend>Your Cheapest Flight Path</legend>
-						<div class="table-responsive">
-							<table class="table table-striped">
-								<thead>
-									<th>
-										Start
-									</th>
-									<th>
-										End
-									</th>
-									<th>
-										Cost
-									</th>
-								</thead>
-								<tbody>
-									<tr ng-repeat="flight in flights">
-										<td>{{flight.start.name}}</td>
-										<td>{{flight.end.name}}</td>
-										<td>{{flight.cost}}</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-						<div style="font-weight: bold; text-align: right;">
-							<p>Total Cost $<span style="text-decoration: underline;">{{cost}}</span></p>
+						<div ng-show="flights">
+							<hr>
+							<legend>Your Cheapest Flight Path</legend>
+							<div class="table-responsive">
+								<table class="table table-striped">
+									<thead>
+										<th>
+											Start
+										</th>
+										<th>
+											End
+										</th>
+										<th>
+											Cost
+										</th>
+									</thead>
+									<tbody>
+										<tr ng-repeat="flight in flights">
+											<td>{{flight.start.name}}</td>
+											<td>{{flight.end.name}}</td>
+											<td>{{flight.cost}}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div style="font-weight: bold; text-align: right;">
+								<p>Total Cost $<span style="text-decoration: underline;">{{cost}}</span></p>
+							</div>
 						</div>
 					</div>
 				</div>

@@ -32,6 +32,9 @@ public class RouteFinder {
 			}
 		}
 		
+		if(viableRoutes.size() < 1)
+			return null;
+		
 		//Find cheapest route
 		List<Flight> cheapestRoute = null;
 		double cheapestTotal = Double.MAX_VALUE;
