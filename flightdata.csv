@@ -1,0 +1,21 @@
+startname,startcode,endname,endcode,cost,distance
+London,LO,Toronto,TO,195.23,192.4
+London,LO,Montreal,MQ,367.89,720.1
+London,LO,New York,NN,395.22,862.3
+London,LO,Detroit,DM,253.09,194.2
+Toronto,TO,Montreal,MQ,297.12,541
+Toronto,TO,New York,NN,345.32,789.8
+Toronto,TO,Detroit,DM,245.61,371.6
+Toronto,TO,London,LO,187.77,192.4
+Montreal,MQ,New York,NN,652.1,599.7
+Montreal,MQ,Detroit,DM,523.93,899.4
+Montreal,MQ,London,LO,354.16,720.1
+Montreal,MQ,Toronto,TO,289.76,541
+New York,NN,Detroit,DM,99.99,989.1
+New York,NN,London,LO,354.54,862.3
+New York,NN,Toronto,TO,325.58,789.8
+New York,NN,Montreal,MQ,555.43,599.7
+Detroit,DM,London,LO,297.68,194.2
+Detroit,DM,Toronto,TO,267.82,371.6
+Detroit,DM,Montreal,MQ,519.38,899.4
+Detroit,DM,New York,NN,125.98,989.1
