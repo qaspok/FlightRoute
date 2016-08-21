@@ -25,6 +25,8 @@ public class FlatFlight {
     private String endcode;
     @JsonProperty("cost")
     private Double cost;
+    @JsonProperty("distance")
+    private Double distance;
 
     @JsonProperty("startname")
     public String getStartname() {
@@ -69,5 +71,14 @@ public class FlatFlight {
     @JsonProperty("cost")
     public void setCost(Double cost) {
         this.cost = cost;
+    }
+    
+    @JsonProperty("distance")
+    public Double getDistance() {
+        return distance;
+    }
+    @JsonProperty("distance")
+    public void setDistance(Double distance) {
+        this.distance = distance;
     }
 }

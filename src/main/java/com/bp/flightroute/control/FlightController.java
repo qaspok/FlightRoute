@@ -5,18 +5,18 @@ import java.io.InputStream;
 import com.bp.flightroute.database.FlightDatabase;
 import com.bp.flightroute.model.FlatFlight;
 import com.bp.flightroute.model.Flights;
-import com.bp.flightroute.model.Route;
+import com.bp.flightroute.model.SearchResults;
 import com.bp.flightroute.util.CvsTransformer;
-import com.bp.flightroute.util.RouteFinder;
+import com.bp.flightroute.util.RouteSearch;
 
 public class FlightController {
 
-	public static Route search(String start, String end) {
+	public static SearchResults search(String start, String end) {
 		
 		Flights flights = FlightDatabase.getAllFlights();
-		RouteFinder routeFinder = new RouteFinder(flights);
-		Route cheapestRoute = routeFinder.cheapestRoute(start, end);
-		return cheapestRoute;
+		RouteSearch routeFinder = new RouteSearch(flights);
+		SearchResults results = routeFinder.search(start, end);
+		return results;
 	}
 
 	public static Flights getAllFlights() {

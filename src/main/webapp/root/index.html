@@ -34,6 +34,7 @@
 					$scope.startcode = null;
 					$scope.endname = null;
 					$scope.endcode = null;
+					$scope.distance = null;
 					$scope.cost = null;
 				}
 
@@ -58,13 +59,14 @@
 							"startcode": $scope.startcode,
 							"endname": $scope.endname,
 							"endcode": $scope.endcode,
+							"distance": $scope.distance,
 							"cost": $scope.cost
 						}
 					}
 					$http(postFlight)
 					.then(function(response) {
 						$scope.addFlightResponse = response.statusText;
-						$scope.flights.push({"cost": $scope.cost, "end": { "code": $scope.endcode, "name": $scope.endname }, "start": { "code": $scope.startcode, "name": $scope.startname }});
+						$scope.flights.push({"cost": $scope.cost, "distance": $scope.distance, "end": { "code": $scope.endcode, "name": $scope.endname }, "start": { "code": $scope.startcode, "name": $scope.startname }});
 						$scope.clearFlightData();
 					},function(response) {
 						$scope.addFlightResponse = response.statusText;
@@ -115,8 +117,8 @@
 					}
 					$http(getRoute)
 					.then(function(response) {
-						$scope.flights = response.data.route;
-						$scope.cost = response.data.cost;
+						$scope.cheapest = response.data.cheapest;
+						$scope.shortest = response.data.shortest;
 						$scope.flightSearchResponse = response.statusText;
 						$scope.start = "";
 						$scope.end = "";
@@ -132,24 +134,24 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<ul class="nav nav-tabs">
-						<li class="nav-item active">
+						<li class="nav-item">
 							<a href="#flight-data" class="nav-link" role="tab" data-toggle="tab">Flight Data</a>
 						</li>
-						<li class="nav-item">
+						<li class="nav-item active">
 							<a href="#search" class="nav-link" role="tab" data-toggle="tab">Search</a>
 						</li>
 					</ul>
 				</div>
 				<div class="col-sm-12 tab-content">
-					<div ng-controller="flightDataController" role="tabpanel" class="tab-pane neat-box active" id="flight-data">
-						<legend>Data Entry</legend>
+					<div ng-controller="flightDataController" role="tabpanel" class="tab-pane neat-box" id="flight-data">
+						<legend>Import CSV Data</legend>
 						<div class="row">
-							<div class="col-sm-12" style="padding-bottom: 10px">
+							<div class="col-sm-4" style="padding-bottom: 10px">
 								<input id="fileInput" type="file" accept=".csv" fileread="cvsFile"  style="margin-bottom: 5px;" />
 								<button type="button" class="btn btn-default" ng-click="importCsv()">Import</button> 
-								<button type="button" class="btn btn-default" ng-click="clearFlightData()">Clear</button>
 							</div>
 						</div>
+						<legend>Manual Entry</legend>
 						<form role="form">
 							<div class="row">
 								<div class="form-group col-sm-8">
@@ -169,11 +171,16 @@
 									<input type="text" class="form-control" id="endcode" ng-model="endcode">
 								</div>
 								<div class="form-group col-sm-4">
+									<label for="distance">Distance:</label>
+									<input type="text" class="form-control" id="distance" ng-model="distance">
+								</div>
+								<div class="form-group col-sm-4">
 									<label for="cost">Cost:</label>
 									<input type="text" class="form-control" id="cost" ng-model="cost">
 								</div>
-								<div class="col-sm-4">
-									<button type="submit" ng-click="addFlight()" class="btn btn-primary" style="margin-top: 24px;">Add Flight</button>
+								<div class="col-sm-4" style="margin-top: 24px;">
+									<button type="submit" ng-click="addFlight()" class="btn btn-primary">Add Flight</button>
+									<button type="button" class="btn btn-default" ng-click="clearFlightData()">Clear</button>
 								</div>
 							</div>
 						</form>
@@ -189,6 +196,9 @@
 										<th ng-click="sortData('endname')">
 											End <div ng-class="getSortClass('endname')" style="display: inline-block;"></div>
 										</th>
+										<th ng-click="sortData('distance')">
+											Distance <div ng-class="getSortClass('distance')" style="display: inline-block;"></div>
+										</th>
 										<th ng-click="sortData('cost')">
 											Cost <div ng-class="getSortClass('cost')" style="display: inline-block;"></div>
 										</th>
@@ -197,14 +207,15 @@
 										<tr ng-repeat="flight in flights | orderBy:sortColumn:reverseSort">
 											<td>{{flight.start.name}}</td>
 											<td>{{flight.end.name}}</td>
-											<td>{{flight.cost}}</td>
+											<td>{{flight.distance}}km</td>
+											<td>${{flight.cost}}</td>
 										</tr>
 									</tbody>
 								</table>
 							</div>
 						</div>
 					</div>
-					<div ng-controller="flightSearchController" role="tabpanel" class="tab-pane neat-box" id="search">
+					<div ng-controller="flightSearchController" role="tabpanel" class="tab-pane neat-box active" id="search">
 						<legend>Flight Search</legend>
 						<form role="form">
 							<div class="row">
@@ -221,33 +232,49 @@
 								</div>
 							</div>
 						</form>
-						<div ng-show="flights">
+						<div ng-show="cheapest">
 							<hr>
-							<legend>Your Cheapest Flight Path</legend>
+							<legend>Cheapest Route</legend>
 							<div class="table-responsive">
 								<table class="table table-striped">
 									<thead>
-										<th>
-											Start
-										</th>
-										<th>
-											End
-										</th>
-										<th>
-											Cost
-										</th>
+										<th>Start</th>
+										<th>End</th>
+										<th>Cost</th>
 									</thead>
 									<tbody>
-										<tr ng-repeat="flight in flights">
+										<tr ng-repeat="flight in cheapest.route">
 											<td>{{flight.start.name}}</td>
 											<td>{{flight.end.name}}</td>
-											<td>{{flight.cost}}</td>
+											<td>${{flight.cost}}</td>
 										</tr>
 									</tbody>
 								</table>
 							</div>
 							<div style="font-weight: bold; text-align: right;">
-								<p>Total Cost $<span style="text-decoration: underline;">{{cost}}</span></p>
+								<p>Total Cost: ${{cheapest.cost}}</p>
+							</div>
+						</div>
+						<div ng-show="shortest">
+							<legend>Shortest Route</legend>
+							<div class="table-responsive">
+								<table class="table table-striped">
+									<thead>
+										<th>Start</th>
+										<th>End</th>
+										<th>Distance</th>
+									</thead>
+									<tbody>
+										<tr ng-repeat="flight in shortest.route">
+											<td>{{flight.start.name}}</td>
+											<td>{{flight.end.name}}</td>
+											<td>{{flight.distance}}km</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div style="font-weight: bold; text-align: right;">
+								<p>Total Distance: {{shortest.distance}}km</p>
 							</div>
 						</div>
 					</div>

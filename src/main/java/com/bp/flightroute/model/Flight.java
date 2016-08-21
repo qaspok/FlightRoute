@@ -1,11 +1,5 @@
 package com.bp.flightroute.model;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -28,8 +22,8 @@ public class Flight {
 	Location end;
 	@JsonProperty("cost")
 	double cost;
-	@JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+	@JsonProperty("distance")
+	double distance;
 	
 	@JsonProperty("start")
 	public Location getStart() {
@@ -58,19 +52,18 @@ public class Flight {
 		this.cost = cost;
 	}
 	
-	@JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
+	@JsonProperty("distance")
+	public double getDistance() {
+		return distance;
+	}
+	@JsonProperty("distance")
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
 	
 	@Override
 	public String toString() {
-		return start + " to " + end + ": " + cost;
+		return start + " to " + end + ": $" + cost + ", " + distance + "km";
 	}
 	
 	@Override
@@ -105,6 +98,10 @@ public class Flight {
 		if(this.getCost() != other.getCost())
 			return false;
 		
+		// distance
+		if(this.getDistance() != other.getDistance())
+			return false;
+		
 		return true;
 	}
 	
@@ -114,6 +111,7 @@ public class Flight {
 		clone.setStart(this.start.clone());
 		clone.setEnd(this.end.clone());
 		clone.setCost(this.cost);
+		clone.setDistance(this.distance);
 		return clone;
 	}
 }

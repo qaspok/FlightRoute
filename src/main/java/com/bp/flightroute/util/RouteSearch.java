@@ -7,19 +7,20 @@ import com.bp.flightroute.model.Flight;
 import com.bp.flightroute.model.Flights;
 import com.bp.flightroute.model.Location;
 import com.bp.flightroute.model.Route;
+import com.bp.flightroute.model.SearchResults;
 
-public class RouteFinder {
+public class RouteSearch {
 
 	private List<Flight> flights;
 	private static final int MAX_DEPTH = 10;
 	private static List<List<Flight>> viableRoutes;
 	
-	public RouteFinder(Flights flights) {
+	public RouteSearch(Flights flights) {
 		
 		this.flights = flights.getFlights();
 	}
 
-	public Route cheapestRoute(String start, String end) {
+	public SearchResults search(String start, String end) {
 
 		// Find viable routes
 		viableRoutes = new ArrayList<List<Flight>>();
@@ -35,24 +36,46 @@ public class RouteFinder {
 		if(viableRoutes.size() < 1)
 			return null;
 		
-		//Find cheapest route
+		//Find cheapest and shortest routes
 		List<Flight> cheapestRoute = null;
+		List<Flight> shortestRoute = null;
 		double cheapestTotal = Double.MAX_VALUE;
+		double shortestTotal = Double.MAX_VALUE;
+		double cheapestDistance = Double.MAX_VALUE;
+		double shortestDistance = Double.MAX_VALUE;
 		for(List<Flight> route : viableRoutes) {
 			double total = 0;
+			double distance = 0;
 			for(Flight flight: route) {
 				total += flight.getCost();
+				distance += flight.getDistance();
 			}
 			if(total < cheapestTotal) {
 				cheapestRoute = route;
 				cheapestTotal = total;
+				cheapestDistance = distance;
+			}
+			if(distance < shortestDistance) {
+				shortestRoute = route;
+				shortestTotal = total;
+				shortestDistance = distance;
 			}
 		}
 		
-		Route route = new Route();
-		route.setRoute(cheapestRoute);
-		route.setCost(cheapestTotal);
-		return route;
+		// build search results
+		SearchResults results = new SearchResults();
+		Route cheapest = new Route();
+		cheapest.setRoute(cheapestRoute);
+		cheapest.setCost(cheapestTotal);
+		cheapest.setDistance(cheapestDistance);
+		results.setCheapest(cheapest);
+		Route shortest = new Route();
+		shortest.setRoute(shortestRoute);
+		shortest.setCost(shortestTotal);
+		shortest.setDistance(shortestDistance);
+		results.setShortest(shortest);
+		
+		return results;
 	}
 	
 	private void findRoutes(String end, Location currentLocation, List<Flight> route, List<Location> visited, int depth) {

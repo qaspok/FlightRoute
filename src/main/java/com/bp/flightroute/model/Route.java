@@ -20,9 +20,10 @@ public class Route {
 
 	@JsonProperty("route")
 	private List<Flight> route;
-	
 	@JsonProperty("cost")
 	private double cost;
+	@JsonProperty("distance")
+	private double distance;
 
 	@JsonProperty("route")
 	public List<Flight> getRoute() {
@@ -44,7 +45,15 @@ public class Route {
 		this.cost = cost;
 	}
 	
-
+	@JsonProperty("distance")
+	public double getDistance() {
+		return distance;
+	}
+	@JsonProperty("distance")
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

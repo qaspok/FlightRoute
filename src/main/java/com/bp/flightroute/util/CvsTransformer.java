@@ -31,6 +31,7 @@ public class CvsTransformer {
 				flight.setStart(new Location(column[0], column[1]));
 				flight.setEnd(new Location(column[2], column[3]));
 				flight.setCost(Double.parseDouble(column[4]));
+				flight.setDistance(Double.parseDouble(column[5]));
 				flights.getFlights().add(flight);
 			}
 		}
